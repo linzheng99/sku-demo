@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id           String        @id @default(cuid())
+  categoryId   String
+  name         String
+  description  String?
+  productImage String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  productItems ProductItem[]
+  category     Category      @relation(fields: [categoryId], references: [id])
+}
+
+model ProductItem {
+  id             String                 @id @default(cuid())
+  productId      String
+  sku            String                 @unique // 自动生成的SKU
+  qtyInStock     Int                    @default(0)
+  price          Decimal                @db.Decimal(10, 2)
+  productImage   String?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  product        Product                @relation(fields: [productId], references: [id])
+  configurations ProductConfiguration[]
+}
+
+model Variation {
+  id         String            @id @default(cuid())
+  categoryId String
+  name       String // 如：颜色、尺寸
+  required   Boolean           @default(true)
+  options    VariationOption[]
+}
+
+model VariationOption {
+  id             String                 @id @default(cuid())
+  variationId    String
+  value          String // 如：红色、XL
+  variation      Variation              @relation(fields: [variationId], references: [id])
+  configurations ProductConfiguration[]
+}
+
+model ProductConfiguration {
+  id                String          @id @default(cuid())
+  productItemId     String
+  variationOptionId String
+  productItem       ProductItem     @relation(fields: [productItemId], references: [id])
+  variationOption   VariationOption @relation(fields: [variationOptionId], references: [id])
+
+  @@unique([productItemId, variationOptionId])
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  products Product[]
+}
