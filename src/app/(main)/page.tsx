@@ -1,7 +1,9 @@
 import CategoryList from "@/features/category/components/category-list";
 import CreateCategory from "@/features/category/components/create-category";
 import CreateProduct from "@/features/product/components/create-product";
-import ProductList from "@/features/product/components/product-list";
+import { CreateProductItem } from "@/features/productItem/components/create-product-item";
+import { CreateVariation } from "@/features/variation/components/create-variation";
+import { SelectProduct } from "@/features/variation/components/select-product";
 
 export default function Home() {
   return (
@@ -20,9 +22,11 @@ export default function Home() {
         </div>
         <div className="flex flex-col gap-2">
           <span className="text-gray-400">Step 2 - create product variants</span>
-          <ProductList />
+          <CreateVariation />
         </div>
         <span className="text-gray-400">Step 3 - generate variant combos</span>
+        <SelectProduct />
+        <CreateProductItem />
         <span className="text-gray-400">Step 4 - save product</span>
       </div>
     </div>

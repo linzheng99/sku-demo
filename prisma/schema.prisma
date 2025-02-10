@@ -30,7 +30,7 @@ model ProductItem {
   productId      String
   sku            String                 @unique // 自动生成的SKU
   qtyInStock     Int                    @default(0)
-  price          Decimal                @db.Decimal(10, 2)
+  price          Float                  @default(0)
   productImage   String?
   createdAt      DateTime               @default(now())
   updatedAt      DateTime               @updatedAt
@@ -39,11 +39,11 @@ model ProductItem {
 }
 
 model Variation {
-  id         String            @id @default(cuid())
-  categoryId String
-  name       String // 如：颜色、尺寸
-  required   Boolean           @default(true)
-  options    VariationOption[]
+  id                   String                 @id @default(cuid())
+  name                 String // 如：颜色、尺寸
+  required             Boolean                @default(true)
+  options              VariationOption[]
+  ProductConfiguration ProductConfiguration[]
 }
 
 model VariationOption {
@@ -57,11 +57,13 @@ model VariationOption {
 model ProductConfiguration {
   id                String          @id @default(cuid())
   productItemId     String
+  variationId       String
   variationOptionId String
   productItem       ProductItem     @relation(fields: [productItemId], references: [id])
   variationOption   VariationOption @relation(fields: [variationOptionId], references: [id])
+  variation         Variation       @relation(fields: [variationId], references: [id])
 
-  @@unique([productItemId, variationOptionId])
+  @@unique([productItemId, variationOptionId, variationId])
 }
 
 model Category {
