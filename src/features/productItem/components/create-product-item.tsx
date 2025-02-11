@@ -40,7 +40,6 @@ export const CreateProductItem = () => {
     },
   })
   function onSubmit(values: z.infer<typeof createProductItemSchema>) {
-    console.log(values)
     if (!productId) {
       toast.error("Please select a product first")
       return
@@ -71,10 +70,9 @@ export const CreateProductItem = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {
           combinations.map((item, index) => {
-            
             return (
               <div key={index} className={`flex flex-row border p-2 rounded-md cursor-pointer ${isSelected === index ? "bg-blue-500" : ""}`} onClick={() => {
                 const configurations: z.infer<typeof configurationsSchema> = []
@@ -100,7 +98,7 @@ export const CreateProductItem = () => {
       </div>
       <div className="flex">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 flex flex-col gap-2">
             <FormField
               control={form.control}
               name="price"
@@ -128,7 +126,6 @@ export const CreateProductItem = () => {
               )}
             />
             <Button type="submit">Submit</Button>
-            <Button type="button" onClick={() => console.log(form.getValues())}>get variation</Button>
           </form>
         </Form>
       </div>
